@@ -1,5 +1,5 @@
 // Use ESM Ajv and plugins from CDN to avoid UMD/MIME issues.
-import Ajv from 'https://esm.sh/ajv@8.17.1';
+import Ajv from 'https://esm.sh/ajv@8.17.1/dist/2020';
 import addFormats from 'https://esm.sh/ajv-formats@3.0.1';
 import ajvErrors from 'https://esm.sh/ajv-errors@3.0.0';
 
