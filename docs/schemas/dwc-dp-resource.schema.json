@@ -1,0 +1,16 @@
+{
+  "$id": "https://schemas.local/dwc-dp/resource",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DWC-DP Resource (subset)",
+  "type": "object",
+  "required": ["name", "schema"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "path": { "type": ["string", "array"] },
+    "mediatype": { "type": "string" },
+    "schema": { "$ref": "https://schemas.local/frictionless/tableschema" }
+  },
+  "additionalProperties": true
+}
+
+

@@ -1,0 +1,60 @@
+{
+  "$id": "https://schemas.local/frictionless/datapackage",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frictionless Data Package (subset)",
+  "type": "object",
+  "required": ["resources"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string" },
+    "profile": { "type": "string" },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "https://schemas.local/frictionless/resource" }
+    }
+  },
+  "$defs": {
+    "field": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "type": { "type": "string" },
+        "format": { "type": "string" },
+        "constraints": { "type": "object" }
+      }
+    },
+    "tableSchema": {
+      "type": "object",
+      "required": ["fields"],
+      "additionalProperties": true,
+      "properties": {
+        "fields": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/field" } },
+        "primaryKey": { "oneOf": [ { "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 } ] },
+        "foreignKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["fields", "reference"],
+            "properties": {
+              "fields": { "oneOf": [ { "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 } ] },
+              "reference": {
+                "type": "object",
+                "required": ["resource", "fields"],
+                "properties": {
+                  "resource": { "type": "string" },
+                  "fields": { "oneOf": [ { "type": "string" }, { "type": "array", "items": { "type": "string" }, "minItems": 1 } ] }
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  }
+}
+
+

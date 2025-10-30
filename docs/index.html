@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DWC-DP Explorer</title>
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Libraries (CDN) -->
+    <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <script src="https://unpkg.com/cytoscape-cose-bilkent@4.1.0/cytoscape-cose-bilkent.js"></script>
+    <script src="https://unpkg.com/ajv@8.17.1/dist/ajv7.min.js"></script>
+    <script src="https://unpkg.com/ajv-formats@3.0.1/dist/ajv-formats.min.js"></script>
+    <script src="https://unpkg.com/ajv-errors@3.0.0/dist/ajv-errors.min.js"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>DWC-DP Explorer</h1>
+      <div class="actions">
+        <button id="btn-layout-dagre" title="Hierarchical layout">Hierarchical</button>
+        <button id="btn-layout-cose" title="Force layout">Force</button>
+        <button id="btn-export-png" title="Export as PNG">Export PNG</button>
+        <input id="search-input" type="search" placeholder="Search resources…">
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="sidebar">
+        <div class="loader-card">
+          <div class="loader-tabs">
+            <button class="tab active" data-tab="file">File</button>
+            <button class="tab" data-tab="paste">Paste</button>
+            <button class="tab" data-tab="url">URL</button>
+          </div>
+
+          <div class="tabpanel active" data-panel="file">
+            <label class="label">Upload datapackage.json</label>
+            <input id="file-input" type="file" accept="application/json">
+          </div>
+
+          <div class="tabpanel" data-panel="paste">
+            <label class="label">Paste datapackage.json</label>
+            <textarea id="paste-input" placeholder="{\n  \"name\": \"example\",\n  \"resources\": []\n}"></textarea>
+            <button id="btn-load-paste">Load</button>
+          </div>
+
+          <div class="tabpanel" data-panel="url">
+            <label class="label">Public URL</label>
+            <input id="url-input" type="url" placeholder="https://.../datapackage.json">
+            <button id="btn-load-url">Load</button>
+            <p class="hint">Tip: For GitHub files, use the raw URL (raw.githubusercontent.com). CORS must allow fetch.</p>
+          </div>
+        </div>
+
+        <div id="validation" class="card">
+          <h2>Validation</h2>
+          <div id="validation-status" class="status">No package loaded.</div>
+          <ul id="validation-errors" class="errors"></ul>
+        </div>
+
+        <div id="details" class="card">
+          <h2>Details</h2>
+          <div id="details-content" class="details-content empty">Select a resource or relation.</div>
+        </div>
+      </section>
+
+      <section class="canvas">
+        <div id="cy"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <a href="https://www.gbif.org/composition/3Be8w9RzbjHtK2brXxTtun/introducing-the-darwin-core-data-package" target="_blank" rel="noreferrer noopener">About DWC-DP</a>
+        ·
+        <a href="https://github.com/gbif/dwc-dp" target="_blank" rel="noreferrer noopener">Schemas</a>
+      </div>
+      <div class="right">
+        Client-only, no backend. Data stays in your browser.
+      </div>
+    </footer>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+  </html>
+
+
