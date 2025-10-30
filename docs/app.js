@@ -1,11 +1,12 @@
 import { setupUI } from './ui.js';
 import { validateDataPackage, loadSchemasIfNeeded } from './validation.js';
-import { initGraph, buildGraph, fitGraph, layoutDagre, layoutCose } from './graph.js';
+import { initGraph, buildGraph, fitGraph, layoutDagre, layoutCose, updateGraphTheme } from './graph.js';
 
 const state = {
   datapackage: null,
   baseUrl: null,
-  cy: null
+  cy: null,
+  theme: 'dark'
 };
 
 async function handlePackageLoaded(pkg, baseUrl) {
@@ -14,7 +15,7 @@ async function handlePackageLoaded(pkg, baseUrl) {
   const validation = await validateDataPackage(pkg);
   renderValidation(validation);
   if (!validation.valid) return;
-  const cy = state.cy || initGraph(document.getElementById('cy'));
+  const cy = state.cy || initGraph(document.getElementById('cy'), state.theme);
   state.cy = cy;
   buildGraph(cy, pkg);
   fitGraph(cy);
@@ -47,7 +48,8 @@ function setupGlobalActions() {
   });
   document.getElementById('btn-export-png').addEventListener('click', () => {
     if (!state.cy) return;
-    const png = state.cy.png({ full: true, scale: 2, bg: '#0b1022' });
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--canvas-bg').trim() || '#ffffff';
+    const png = state.cy.png({ full: true, scale: 2, bg });
     const a = document.createElement('a');
     a.href = png;
     a.download = 'dwc-dp-graph.png';
@@ -64,8 +66,28 @@ function setupGlobalActions() {
   });
 }
 
+function applyTheme(theme) {
+  state.theme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  const btn = document.getElementById('btn-theme');
+  btn.textContent = theme === 'dark' ? 'Light' : 'Dark';
+  if (state.cy) updateGraphTheme(state.cy, theme);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const initial = saved || (prefersLight ? 'light' : 'dark');
+  applyTheme(initial);
+  document.getElementById('btn-theme').addEventListener('click', () => {
+    applyTheme(state.theme === 'dark' ? 'light' : 'dark');
+  });
+}
+
 async function bootstrap() {
   await loadSchemasIfNeeded();
+  initTheme();
   setupUI({ onPackageLoaded: handlePackageLoaded });
   setupGlobalActions();
 }

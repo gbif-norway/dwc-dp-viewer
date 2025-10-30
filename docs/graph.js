@@ -1,12 +1,22 @@
-export function initGraph(container) {
+function getGraphStyles(theme) {
+  const isLight = theme === 'light';
+  const nodeColor = isLight ? '#16a34a' : '#22c55e';
+  const textColor = isLight ? '#0f172a' : '#e5e7eb';
+  const edgeColor = isLight ? '#3b82f6' : '#8bafff';
+  const labelBg = isLight ? '#ffffff' : '#0b1022';
+  const selectBorder = isLight ? '#ca8a04' : '#eab308';
+  return [
+    { selector: 'node', style: { 'background-color': nodeColor, 'label': 'data(label)', 'color': textColor, 'font-size': 10, 'text-wrap': 'wrap', 'text-max-width': 140, 'text-valign': 'center', 'text-halign': 'center' } },
+    { selector: 'edge', style: { 'curve-style': 'bezier', 'width': 2, 'line-color': edgeColor, 'target-arrow-color': edgeColor, 'target-arrow-shape': 'triangle', 'label': 'data(label)', 'font-size': 8, 'color': isLight ? '#334155' : '#94a3b8', 'text-background-color': labelBg, 'text-background-opacity': 0.7, 'text-background-padding': 2 } },
+    { selector: '.dim', style: { 'opacity': 0.25 } },
+    { selector: ':selected', style: { 'border-width': 3, 'border-color': selectBorder } }
+  ];
+}
+
+export function initGraph(container, theme) {
   const cy = cytoscape({
     container,
-    style: [
-      { selector: 'node', style: { 'background-color': '#22c55e', 'label': 'data(label)', 'color': '#e5e7eb', 'font-size': 10, 'text-wrap': 'wrap', 'text-max-width': 140, 'text-valign': 'center', 'text-halign': 'center' } },
-      { selector: 'edge', style: { 'curve-style': 'bezier', 'width': 2, 'line-color': '#8bafff', 'target-arrow-color': '#8bafff', 'target-arrow-shape': 'triangle', 'label': 'data(label)', 'font-size': 8, 'color': '#94a3b8', 'text-background-color': '#0b1022', 'text-background-opacity': 0.7, 'text-background-padding': 2 } },
-      { selector: '.dim', style: { 'opacity': 0.25 } },
-      { selector: ':selected', style: { 'border-width': 3, 'border-color': '#eab308' } }
-    ],
+    style: getGraphStyles(theme || 'dark'),
     wheelSensitivity: 0.2,
     minZoom: 0.1,
     maxZoom: 5
@@ -65,6 +75,11 @@ export function layoutDagre(cy) {
 export function layoutCose(cy) {
   cy.layout({ name: 'cose', animate: false, randomize: true }).run();
   fitGraph(cy);
+}
+
+export function updateGraphTheme(cy, theme) {
+  if (!cy) return;
+  cy.style().fromJson(getGraphStyles(theme || 'dark')).update();
 }
 
 
