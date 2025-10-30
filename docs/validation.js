@@ -1,5 +1,7 @@
-// Ajv is loaded from CDN as global Ajv (ajv7 build)
-// We compile schemas on first use and keep the validator cached.
+// Use ESM Ajv and plugins from CDN to avoid UMD/MIME issues.
+import Ajv from 'https://esm.sh/ajv@8.17.1';
+import addFormats from 'https://esm.sh/ajv-formats@3.0.1';
+import ajvErrors from 'https://esm.sh/ajv-errors@3.0.0';
 
 let ajvInstance = null;
 let compiled = null;
@@ -13,9 +15,9 @@ async function fetchJson(path) {
 export async function loadSchemasIfNeeded() {
   if (ajvInstance) return;
   // Configure Ajv with formats and ajv-errors
-  ajvInstance = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true, $data: true });
-  if (window.ajvFormats) window.ajvFormats(ajvInstance);
-  if (window.ajvErrors) window.ajvErrors(ajvInstance);
+  ajvInstance = new Ajv({ allErrors: true, strict: true, allowUnionTypes: true });
+  addFormats(ajvInstance);
+  ajvErrors(ajvInstance);
 
   // Load bundled schemas
   const [dataPackage, tableSchema, dwcDp, dwcResource] = await Promise.all([

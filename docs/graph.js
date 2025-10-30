@@ -12,13 +12,7 @@ export function initGraph(container) {
     maxZoom: 5
   });
 
-  // Ensure layout extensions are registered
-  if (cytoscape && cytoscape('core', 'layout').length === 0 && window.cytoscapeDagre) {
-    window.cytoscape.use(window.cytoscapeDagre);
-  }
-  if (window.cytoscapeCoseBilkent) {
-    window.cytoscape.use(window.cytoscapeCoseBilkent);
-  }
+  // cytoscape-dagre registers automatically when loaded after cytoscape and dagre
 
   // Click interactions to show details via dispatch event
   cy.on('select', 'node,edge', (evt) => {
@@ -69,7 +63,7 @@ export function layoutDagre(cy) {
 }
 
 export function layoutCose(cy) {
-  cy.layout({ name: 'cose-bilkent', animate: false, randomize: true, gravity: 1 }).run();
+  cy.layout({ name: 'cose', animate: false, randomize: true }).run();
   fitGraph(cy);
 }
 
